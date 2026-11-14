@@ -26,7 +26,7 @@ FETCH:
 	
     MOVE.W EPC, D0 
     MULS.W #2, D0   ; D0 = EPC * 2 (obtener desplazamiento en bytes)
-    MOVEA.W D0, A0  ; calculamos dirección efectivs en A0
+    MOVEA.W D0, A0  ; calculamos direccion efectiva en A0
     MOVE.W EMEM(A0),EIR ; EIR <- EMEM[A0]
     ADDQ.W #1, EPC     ; EPC ++    
     ;--- FFETCH: FIN FETCH
@@ -39,11 +39,11 @@ FETCH:
         ;*** almacenando el resultado de la decodificacion en D1
 
     
-    MOVE.W #0, -(SP) ; la salida(ID de instrucción) se almacena en un espacio 
+    MOVE.W #0, -(SP) ; la salida(ID de instruccion) se almacena en un espacio 
                      ;reservado en la pila antes de la llamada
                      
-    MOVE.W EIR, -(SP) ; el parámetro de entrada es el valor EIR pasado 
-                      ;através de la pila
+    MOVE.W EIR, -(SP) ; el parametro de entrada es el valor EIR pasado 
+                      ;a traves de la pila
         
     JSR DECOD
     
@@ -84,14 +84,14 @@ JMPLIST:
 	; ESCRIBID EN CADA ETIQUETA LA FASE DE EJECUCION DE CADA INSTRUCCION
 EHLT:
     
-     BRA FIN_PROGRAM ; Detiene la máquina
+     BRA FIN_PROGRAM ; Detiene la maquina
      
      
     
 
 EJMI:
     MOVE.W EIR, D0   ;D0 = 0100xxxxmmmmmmmm
-    ANDI.W #$00FF, D0 ; máscara para obtener m (bits 7-0)
+    ANDI.W #$00FF, D0 ; mascara para obtener m (bits 7-0)
     
     MOVE.W D0, EPC      ; EPC <- m
     
@@ -104,7 +104,7 @@ EJMZ:
     BEQ FETCH
     
     MOVE.W EIR, D0 ; D0 = 0101xxxxmmmmmmmm
-    ANDI.W #$00FF, D0  ; máscara para obtener m (bits 7-0)     
+    ANDI.W #$00FF, D0  ; mascara para obtener m (bits 7-0)     
     
     MOVE.W D0, EPC  ;EPC <- m
     BRA FETCH
@@ -116,7 +116,7 @@ EJMN:
     BEQ FETCH 
     
     MOVE.W EIR, D0 ; D0 = 0110xxxxmmmmmmmm  
-    ANDI.W #$00FF, D0   ; máscara m para (bits 7-0) 
+    ANDI.W #$00FF, D0   ; mascara m para (bits 7-0) 
     
     MOVE.W D0, EPC  ; EPC <- m    
     BRA FETCH 
@@ -139,7 +139,7 @@ CONTINUAR_STO:
     ADD.W D0,D0      ; ajustamos desplazaciemto
     
     LEA EMEM, A0    
-    ADD.L D0, A0    ; calculamos dirección efectiva en A0
+    ADD.L D0, A0    ; calculamos direccion efectiva en A0
     
     MOVE.W D1, (A0) ; MEM[A0] <- D1
     
@@ -150,12 +150,12 @@ ELOA:
         
     MOVE.W EIR, D0  ;D0 = 101xxxjxmmmmmmmm
     
-    ANDI.W #$00FF, D0 ;máscara bits 7-0
+    ANDI.W #$00FF, D0 ;mascara bits 7-0
     
-    ADD.W D0, D0  ; ajustamos tamaño palabra, D0 = m * 2 
+    ADD.W D0, D0  ; ajustamos tamano palabra, D0 = m * 2 
     
     LEA EMEM, A0
-    ADD.L D0, A0 ; calculamos la dirección efectiva: EMEM + 2*m
+    ADD.L D0, A0 ; calculamos la direccion efectiva: EMEM + 2*m
     
     MOVE.W (A0),D1 ; D1= MEM[A0]
 
@@ -176,16 +176,16 @@ ETRA:
     MOVE.W EIR, D0 ; D0 = 11000xxxxxaaabbb
     
     MOVE.W D0, D2
-    ANDI.W #$0038, D2 ; máscara, conserva bits 5-3
+    ANDI.W #$0038, D2 ; mascara, conserva bits 5-3
     LSR.W #3, D2    ; D2 = Xa (0-7)
     
-    MOVE.W D0, D3     ;extrae índice Xb (bits 2-0)
+    MOVE.W D0, D3     ;extrae indice Xb (bits 2-0)
     ANDI.W #$0007, D3 ; D3 = Xb (0-7)
         
     MOVE.W D2, D0   ; lee contenido de Xa
     JSR LEE_REG
     
-    MOVE.W D3, D0 ; escribe en Xb el valor leído
+    MOVE.W D3, D0 ; escribe en Xb el valor leido
     JSR ESCRIBE_REG
     
     BRA FETCH
@@ -195,13 +195,13 @@ EADD:
     MOVE.W EIR, D0 ;D0 = 11001xxxxxaaabbb
     
     MOVE.W D0, D2     
-    ANDI.W #$0038, D2   ; máscara conserva bits 5-3
+    ANDI.W #$0038, D2   ; mascara conserva bits 5-3
     LSR.W #3, D2        ; D2 = Ra (0-7)
     
     MOVE.W D0, D3
-    ANDI.W #$0007, D3   ; máscara, bits 2-0 D3 = Rb (0-7)
+    ANDI.W #$0007, D3   ; mascara, bits 2-0 D3 = Rb (0-7)
     
-    MOVE.W D2,D0    ; índice Ra
+    MOVE.W D2,D0    ; indice Ra
     JSR LEE_REG     ; D1 = [Ra]
     MOVE.W D1, D2   ;[Ra] en D2
     
@@ -230,7 +230,7 @@ ESUB:
     MOVE.W EIR, D0  ;D0 = 11010xxxxxaaabbb
     
     MOVE.W D0, D2
-    ANDI.W #$0038, D2   ;máscara bits 5-3
+    ANDI.W #$0038, D2   ;mascara bits 5-3
     LSR.W #3, D2        ;D2 = Ra(0-7)
     
     MOVE.W D0, D3
@@ -245,7 +245,7 @@ ESUB:
     MOVE.W D1, D3   ; [Rb] = en D3
     
     NOT.W D2
-    ADDQ.W #1, D2   ; operación resta en C2: A - B = A + (-B)
+    ADDQ.W #1, D2   ; operacion resta en C2: A - B = A + (-B)
     
     ADD.W D2, D3    ;D3 = [Rb] - [Ra]
     
@@ -265,17 +265,17 @@ ECMP:
     MOVE.W EIR, D0  ;D0 = 11011xxxxxaaabbb
     
     MOVE.W D0, D2   
-    ANDI.W #$0038, D2   ; máscara bits 5-3
+    ANDI.W #$0038, D2   ; mascara bits 5-3
     LSR.W #3, D2        ;D2 = Ra(0-7)
     
-    MOVE.W D0, D3       ; máscara bits 2-0
+    MOVE.W D0, D3       ; mascara bits 2-0
     ANDI.W #$0007, D3   ; D3 = Rb(0-7)
     
-    MOVE.W D2, D0       ; D0 = índice Ra
+    MOVE.W D2, D0       ; D0 = indice Ra
     JSR LEE_REG         
     MOVE.W D1, D2       ; [Ra] = en D2
     
-    MOVE.W D3, D0      ; D0 = índice Rb
+    MOVE.W D3, D0      ; D0 = indice Rb
     JSR LEE_REG     
     MOVE.W D1, D3       ; [Rb] = en D3
     
@@ -296,11 +296,11 @@ ENAN:
     MOVE.W EIR, D0 ; D0 = 11100xxxxxaaabbb
     
     MOVE.W D0, D2
-    ANDI.W #$0038, D2 ; máscara bits 5-3
+    ANDI.W #$0038, D2 ; mascara bits 5-3
     LSR.W #3, D2    ; D2 = Ra (0-7)
     
     MOVE.W D0, D3
-    ANDI.W #$0007, D3 ;máscara bits 2-0 , D3 = Rb(0-7)
+    ANDI.W #$0007, D3 ;mascara bits 2-0 , D3 = Rb(0-7)
     
     MOVE.W D2, D0   ; D0 = Ra
     JSR LEE_REG     ; D1 = [Ra]
@@ -325,12 +325,12 @@ ESET:
     MOVE.W EIR, D0    ; D0 = 11101ccccccccbbb
     
     MOVE.W D0, D1     ; copia D0 en D1    
-    ANDI.W #$07F8, D1 ; máscara, solo hay bits 10:3
+    ANDI.W #$07F8, D1 ; mascara, solo hay bits 10:3
     LSR.W #3, D1     ; desplaza cccccccc -> bits 7:0 de D1
     EXT.W D1            ;extension de signo
     MOVE.W SR, D5
 
-    ANDI.W #$0007, D0 ; máscara, soolo bits 2:0
+    ANDI.W #$0007, D0 ; mascara, solo bits 2:0
     
     JSR ACTUALIZAR_CZN ; actualiza Z y N con el valor en D1
     
@@ -509,7 +509,7 @@ ESCRIBE_R5:
 DECOD:
 	        
     MOVE.L D0, -(SP) ; empuja el valor de D0 en la pila, 
-                     ;reservando espacio y recuperándola  después
+                     ;reservando espacio y recuperandola  despues
     MOVE.W 8(SP),D0
 	        
 	;INSTR HLT BITS 15 Y 14 = 00
